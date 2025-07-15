@@ -1,6 +1,7 @@
 queueonteleport(
     "loadstring(game:HttpGet('https://raw.githubusercontent.com/LuaSecurity/Sneak-Thief/refs/heads/main/AutoFarm'))()"
 )
+wait(5)
 if game.PlaceId == 492229395 then
     repeat
         task.wait()
