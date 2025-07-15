@@ -1,10 +1,22 @@
 queueonteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/LuaSecurity/Sneak-Thief/refs/heads/main/AutoFarm'))()")
+
+repeat task.wait() until game:IsLoaded()
+repeat task.wait() until game.Players and game.Players.LocalPlayer and game.Players.LocalPlayer.Character
+repeat task.wait() until game.ReplicatedStorage
+
+local function waitForDescendants(instance, names)
+    for _, name in ipairs(names) do
+        repeat task.wait() until instance:FindFirstChild(name, true)
+    end
+end
+
 if game.PlaceId == 492229395 then
-    repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer.Character and game.ReplicatedStorage:FindFirstChild("Events") and game.ReplicatedStorage.Events:FindFirstChild("TeleportPlayer")
+    waitForDescendants(game.ReplicatedStorage, {"Events", "Events.TeleportPlayer"})
     game.ReplicatedStorage.Events.TeleportPlayer:FireServer(140273672157780)
 elseif game.PlaceId == 140273672157780 then
-    repeat task.wait() until game:IsLoaded() and game.ReplicatedStorage:FindFirstChild("GameEvents") and game.ReplicatedStorage.GameEvents.InteractionEvents:FindFirstChild("Steal") and workspace:FindFirstChild("Stealables") and workspace:FindFirstChild("EndBox")
-    
+    waitForDescendants(game.ReplicatedStorage, {"GameEvents", "GameEvents.InteractionEvents", "GameEvents.InteractionEvents.Steal"})
+    waitForDescendants(workspace, {"Stealables", "EndBox"})
+
     local stealEvent = game.ReplicatedStorage.GameEvents.InteractionEvents.Steal
     local hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
 
