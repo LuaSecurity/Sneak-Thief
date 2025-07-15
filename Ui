@@ -1,0 +1,71 @@
+local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
+local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau"))()
+local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau"))()
+
+local Window = Library:CreateWindow{
+    Title = 'Lunar Hub',
+    SubTitle = "Sneak Thief",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(830, 525),
+    Resize = true,
+    MinSize = Vector2.new(470, 380),
+    Acrylic = true,
+    Theme = "Amethyst Dark",
+    MinimizeKey = Enum.KeyCode.RightControl
+}
+
+local Tabs = {
+    Main = Window:CreateTab{
+        Title = "Main",
+        Icon = "phosphor-users-bold"
+    },
+    Settings = Window:CreateTab{
+        Title = "Settings",
+        Icon = "settings"
+    }
+}
+
+Tabs.Main:CreateButton{
+    Title = "Auto Farm",
+    Description = "Farms all stealables and ends round.",
+    Callback = function()
+        local stealEvent = game.ReplicatedStorage.GameEvents.InteractionEvents.Steal
+        local stealables = workspace.Stealables
+        local endBox = workspace.EndBox
+        local hrp = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+        for _, item in ipairs(stealables:GetDescendants()) do
+            task.spawn(function()
+                stealEvent:InvokeServer(item)
+                task.wait()
+            end)
+        end
+
+        if hrp then
+            firetouchinterest(hrp, endBox, 0)
+            firetouchinterest(hrp, endBox, 1)
+        end
+    end
+}
+
+SaveManager:SetLibrary(Library)
+InterfaceManager:SetLibrary(Library)
+
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes{}
+
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+Window:SelectTab(1)
+
+Library:Notify{
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+}
+
+SaveManager:LoadAutoloadConfig()
